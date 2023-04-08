@@ -8,7 +8,7 @@
   <meta name="keywords" content="HTML CSS JS Dictionary" />
   <meta name="description" content="Simple English Dictionary using HTML CSS JS and Dictionary API." />
   <meta name="author" content="Soham Manjrekar" />
-  <title>Password Generator</title>
+  <title>Typing Game</title>
   <link rel="icon" type="image/x-icon" href="/images/logo.png">
   <link rel="stylesheet" type="text/css"
     href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.1.3/assets/owl.carousel.min.css" />
@@ -73,47 +73,42 @@
         <div class="custom_heading-container">
           <hr>
           <h2>
-            Password Generator
+            Typing Game
           </h2>
 
         </div>
         <p>
-          A simple, secure & clean way to generate random passcodes and passwords 🔑
+          Improve your typing speed with TypeWriter
         </p>
       </div>
     </div>
     <div class="container">
       <div class="service_container layout_padding2">
-        <div class="container container1">
-          <div class="result-container">
-            <span id="result"></span>
-            <button class="btn" id="clipboard" style="width:10vw;">
-              Copy
+        <div class="container container1 py-5">
+          <div class="container mb-4">
+            <button id="settings-btn" class="settings-btn">
+              <i class="fas fa-cog"></i>
             </button>
-          </div>
-          <div class="settings">
-            <div class="setting">
-              <label for="length">Password Length</label>
-              <input type="number" name="length" id="length" min="4" max="20" value="20" />
-            </div>
-            <div class="setting">
-              <label for="uppercase">Include uppercase letters</label>
-              <input type="checkbox" name="uppercase" id="uppercase" checked />
-            </div>
-            <div class="setting">
-              <label for="lowercase">Include lowercase letters</label>
-              <input type="checkbox" name="lowercase" id="lowercase" checked />
-            </div>
-            <div class="setting">
-              <label for="numbers">Include numbers</label>
-              <input type="checkbox" name="numbers" id="numbers" checked />
-            </div>
-            <div class="setting">
-              <label for="symbols">Include symbols</label>
-              <input type="checkbox" name="symbols" id="symbols" checked />
+            <div class="settings mb-5" id="settings">
+              <form id="settings-form">
+                <label for="difficulty">Difficulty</label>
+                <select id="difficulty">
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </form>
             </div>
           </div>
-          <button class="btn btn-large" id="generate">Generate Password</button>
+          <div class="container my-4">
+            <h2>👩‍💻 Speed Typer 👨‍💻</h2>
+            <small>Type the following:</small>
+            <h1 id="word"></h1>
+            <input type="text" id="text" autocomplete="off" placeholder="Type the word here..." />
+            <p class="time-container pt-3">Time left: <span id="time">10s</span></p>
+            <p class="score-container pt-3">Score: <span id="score">0</span></p>
+            <div id="end-game-container" class="end-game-container"></div>
+          </div>
         </div>
       </div>
   </section>

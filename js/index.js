@@ -1,84 +1,102 @@
-const resultElement = document.getElementById("result");
-const lengthElement = document.getElementById("length");
-const uppercaseElement = document.getElementById("uppercase");
-const lowercaseElement = document.getElementById("lowercase");
-const numbersElement = document.getElementById("numbers");
-const symbolsElement = document.getElementById("symbols");
-const generateElement = document.getElementById("generate");
-const clipboardElement = document.getElementById("clipboard");
+const word = document.getElementById("word");
+const text = document.getElementById("text");
+const scoreElement = document.getElementById("score");
+const timeElement = document.getElementById("time");
+const endgameElement = document.getElementById("end-game-container");
+const settingsButton = document.getElementById("settings-btn");
+const settings = document.getElementById("settings");
+const settingsForm = document.getElementById("settings-form");
+const difficultySelect = document.getElementById("difficulty");
 
-// Random functions
-// fromCharCode: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/fromCharCode
-// ASCII codes: https://www.w3schools.com/charsets/ref_html_ascii.asp
-const getRandomLower = () =>
-  String.fromCharCode(Math.floor(Math.random() * 26) + 97);
+// List of words for game
+const words = [
+  "sigh",
+  "tense",
+  "airplane",
+  "ball",
+  "pies",
+  "juice",
+  "warlike",
+  "bad",
+  "north",
+  "dependent",
+  "steer",
+  "silver",
+  "highfalutin",
+  "superficial",
+  "quince",
+  "eight",
+  "feeble",
+  "admit",
+  "drag",
+  "loving",
+];
 
-const getRandomUpper = () =>
-  String.fromCharCode(Math.floor(Math.random() * 26) + 65);
+let randomWord;
+let score = 0;
+let time = 10;
+// let difficulty = "medium";
+let difficulty =
+  localStorage.getItem("difficulty") !== null
+    ? localStorage.getItem("difficulty")
+    : "medium";
 
-const getRandomNumber = () =>
-  String.fromCharCode(Math.floor(Math.random() * 10) + 48);
+const timeInterval = setInterval(updateTime, 1000);
 
-const getRandomSymbol = () => {
-  const symbols = "!@#$%^&*(){}[]=<>/,.";
-  return symbols[Math.floor(Math.random() * symbols.length)];
-};
+function getRandomWord() {
+  return words[Math.floor(Math.random() * words.length)];
+}
 
-const randomFunctions = {
-  lower: getRandomLower,
-  upper: getRandomUpper,
-  number: getRandomSymbol,
-  symbol: getRandomSymbol,
-};
+function addWordToDom() {
+  randomWord = getRandomWord();
+  word.innerText = randomWord;
+}
 
-const createNotification = (message) => {
-  const notif = document.createElement("div");
-  notif.classList.add("toast");
-  notif.innerText = message;
-  document.body.appendChild(notif);
-  setTimeout(() => notif.remove(), 3000);
-};
+function updateScore() {
+  score++;
+  scoreElement.innerText = score;
+}
 
-clipboardElement.addEventListener("click", () => {
-  const password = resultElement.innerText;
-  if (!password) return;
-  const textarea = document.createElement("textarea");
-  textarea.value = password;
-  document.body.appendChild(textarea);
-  textarea.select();
-  document.execCommand("copy");
-  textarea.remove();
-  createNotification("Password copied to clipboard!");
-});
-
-generateElement.addEventListener("click", () => {
-  const length = +lengthElement.value;
-  const hasLower = lowercaseElement.checked;
-  const hasUpper = uppercaseElement.checked;
-  const hasNumber = numbersElement.checked;
-  const hasSymbol = symbolsElement.checked;
-  resultElement.innerText = generatePassword(
-    hasLower,
-    hasUpper,
-    hasNumber,
-    hasSymbol,
-    length
-  );
-});
-
-const generatePassword = (lower, upper, number, symbol, length) => {
-  let generatedPassword = "";
-  const typesCount = lower + upper + number + symbol;
-  const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(
-    (item) => Object.values(item)[0]
-  );
-  if (typesCount === 0) return "";
-  for (let i = 0; i < length; i += typesCount) {
-    typesArr.forEach((type) => {
-      const funcName = Object.keys(type)[0];
-      generatedPassword += randomFunctions[funcName]();
-    });
+function updateTime() {
+  time--;
+  timeElement.innerText = time + "s";
+  if (time === 0) {
+    clearInterval(timeInterval);
+    gameOver();
   }
-  const finalPassword = generatedPassword.slice(0, length);
-  return finalPassword;
-};
+}
+
+function gameOver() {
+  endgameElement.innerHTML = `
+    <h1>Time ran out</h1>
+    <p>Your final score is ${score}</p>
+    <button onclick="history.go(0)">Play Again</button>
+    `;
+  endgameElement.style.display = "flex";
+}
+
+text.addEventListener("input", (e) => {
+  const insertedText = e.target.value;
+  if (insertedText === randomWord) {
+    e.target.value = "";
+    addWordToDom();
+    updateScore();
+    if (difficulty === "hard") time += 2;
+    else if (difficulty === "medium") time += 3;
+    else time += 5;
+    updateTime();
+  }
+});
+
+settingsButton.addEventListener("click", () =>
+  settings.classList.toggle("hide")
+);
+settingsForm.addEventListener("change", (e) => {
+  difficulty = e.target.value;
+  localStorage.setItem("difficulty", difficulty);
+});
+
+// Init
+difficultySelect.value = difficulty;
+addWordToDom();
+text.focus();
